@@ -64,6 +64,10 @@
           <text class="row-k">录入时间</text>
           <text class="row-v">{{device.updatedAtText}}</text>
         </view>
+        <view class="row row-last">
+          <text class="row-k">录入人</text>
+          <text class="row-v">{{device.creatorName || '未设置姓名'}}</text>
+        </view>
       </view>
 
       <!-- 备注 -->

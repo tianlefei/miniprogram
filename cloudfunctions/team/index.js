@@ -6,7 +6,7 @@ const _ = db.command
 let initialized = false
 async function ensureCollections() {
   if (initialized) return
-  for (const name of ['teams', 'team_members']) {
+  for (const name of ['teams', 'team_members', 'user_profiles']) {
     try { await db.createCollection(name) } catch (e) {}
   }
   initialized = true
@@ -42,7 +42,19 @@ exports.main = async function (event) {
     if (!ids.length) return { teams: [], members: [] }
     const ts = await teams.where({ _id: _.in(ids) }).get()
     const all = await members.where({ teamId: _.in(ids) }).get()
-    return { teams: ts.data, members: all.data }
+    const openids = all.data.map(function (m) { return m._openid }).filter(Boolean)
+    const profiles = openids.length ? await db.collection('user_profiles').where({ _openid: _.in(openids) }).get() : { data: [] }
+    const names = {}
+    ;(profiles.data || []).forEach(function (p) { names[p._openid] = p.name })
+    return {
+      teams: ts.data,
+      members: all.data.map(function (m) {
+        return Object.assign({}, m, {
+          name: names[m._openid] || '未设置姓名',
+          roleName: m.role === 'owner' ? '负责人' : '成员'
+        })
+      })
+    }
   }
   return { ok: false, error: 'unknown-action' }
 }

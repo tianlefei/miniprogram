@@ -35,6 +35,7 @@ function normalizeDevice(input) {
   delete item._id
   delete item._openid
   delete item.localId
+  delete item.ownerOpenid
   delete item.dirty
   delete item.status
   delete item.percent
@@ -60,6 +61,12 @@ async function upsertDevice(openid, input) {
     .limit(1)
     .get()
 
+  if (!data.creatorOpenid) data.creatorOpenid = existing.data.length ? (existing.data[0].creatorOpenid || existing.data[0]._openid) : openid
+  if (!data.creatorName) {
+    const profile = await db.collection('user_profiles').where({ _openid: data.creatorOpenid }).limit(1).get()
+    data.creatorName = profile.data.length ? String(profile.data[0].name || '') : ''
+  }
+
   if (existing.data.length) {
     await db
       .collection(DEVICE_COLLECTION)
@@ -82,6 +89,22 @@ async function findPush(openid) {
   return res.data.length ? res.data[0] : null
 }
 
+// 普通成员只能看自己的设备；团队负责人可查看本团队所有成员的设备。
+async function readableOwners(openid) {
+  const owners = [openid]
+  try {
+    const managed = await db.collection('team_members').where({ _openid: openid, role: 'owner' }).get()
+    const teamIds = (managed.data || []).map(function (m) { return m.teamId })
+    if (teamIds.length) {
+      const members = await db.collection('team_members').where({ teamId: _.in(teamIds) }).get()
+      ;(members.data || []).forEach(function (m) {
+        if (m._openid && owners.indexOf(m._openid) < 0) owners.push(m._openid)
+      })
+    }
+  } catch (e) {}
+  return owners
+}
+
 exports.main = async function (event) {
   await ensureCollections()
 
@@ -102,12 +125,13 @@ exports.main = async function (event) {
 
   // 拉取当前用户全部设备
   if (action === 'list') {
+    const ownerIds = await readableOwners(openid)
     const all = []
     let skip = 0
     while (true) {
       const res = await db
         .collection(DEVICE_COLLECTION)
-        .where({ _openid: openid })
+        .where({ _openid: _.in(ownerIds) })
         .orderBy('updatedAt', 'desc')
         .skip(skip)
         .limit(PAGE_SIZE)
@@ -117,11 +141,24 @@ exports.main = async function (event) {
       if (data.length < PAGE_SIZE) break
       skip += PAGE_SIZE
     }
-    return { list: all }
+    const profileIds = all.map(function (d) { return d.creatorOpenid || d._openid }).filter(Boolean)
+    const profileRes = profileIds.length ? await db.collection('user_profiles').where({ _openid: _.in(profileIds) }).get() : { data: [] }
+    const profileNames = {}
+    ;(profileRes.data || []).forEach(function (p) { profileNames[p._openid] = p.name })
+    return { list: all.map(function (d) {
+      const creatorOpenid = d.creatorOpenid || d._openid
+      return Object.assign({}, d, {
+        creatorOpenid: creatorOpenid,
+        creatorName: profileNames[creatorOpenid] || d.creatorName || ''
+      })
+    }) }
   }
 
   if (action === 'maintenanceList') {
-    const res = await db.collection('maintenance_records').where({ _openid: openid, deviceId: event.deviceId }).orderBy('recordAt', 'desc').get()
+    const ownerIds = await readableOwners(openid)
+    const visibleDevice = await db.collection(DEVICE_COLLECTION).where({ _openid: _.in(ownerIds), localId: event.deviceId }).limit(1).get()
+    if (!visibleDevice.data.length) return { list: [], error: 'device-not-readable' }
+    const res = await db.collection('maintenance_records').where({ deviceId: event.deviceId }).orderBy('recordAt', 'desc').get()
     const list = res.data || []
     const ids = list.map(function (r) { return r.operatorOpenid || r._openid }).filter(Boolean)
     const profiles = ids.length ? await db.collection('user_profiles').where({ _openid: _.in(ids) }).get() : { data: [] }
@@ -149,6 +186,7 @@ exports.main = async function (event) {
     const list = (event.devices || []).slice(0, 100)
     let count = 0
     for (let i = 0; i < list.length; i++) {
+      if (list[i].ownerOpenid && list[i].ownerOpenid !== openid) continue
       const ok = await upsertDevice(openid, list[i])
       if (ok) count += 1
     }

@@ -17,7 +17,7 @@
         <text class="card-title">{{item.name}}</text>
         <view class="invite" wx:if="{{item.inviteCode}}" bindtap="copyInvite"><text class="remark">邀请码：{{item.inviteCode}}</text><text class="copy">复制</text></view>
         <text class="remark">团队成员：{{members.length}} 人</text>
-        <view class="member" wx:for="{{members}}" wx:key="_id"><text>成员 {{index + 1}}</text><text class="member-id">{{item._openid}}</text></view>
+        <view class="member" wx:for="{{members}}" wx:key="_id"><text>{{item.name}}</text><text class="member-id">{{item.roleName}}</text></view>
       </view>
     </view>
   </scroll-view>

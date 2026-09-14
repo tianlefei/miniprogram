@@ -419,6 +419,13 @@ function mergeRemote(remoteList) {
     const local = map[r.id]
     if (!local || (r.updatedAt || 0) > (local.updatedAt || 0)) {
       map[r.id] = Object.assign({}, r, { dirty: false })
+    } else {
+      // 姓名和所有者由云端关联生成，不参与业务更新时间比较，始终回填本地缓存。
+      map[r.id] = Object.assign({}, local, {
+        creatorOpenid: r.creatorOpenid || local.creatorOpenid || '',
+        creatorName: r.creatorName || local.creatorName || '',
+        ownerOpenid: r.ownerOpenid || local.ownerOpenid || ''
+      })
     }
   })
   return Object.keys(map).map(function (k) {

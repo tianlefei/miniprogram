@@ -120,6 +120,7 @@ function callDevice(action, payload) {
 function fromCloud(doc) {
   const item = Object.assign({}, doc)
   item.id = doc.localId || doc._id
+  item.ownerOpenid = doc._openid || ''
   delete item._id
   delete item._openid
   delete item.localId
