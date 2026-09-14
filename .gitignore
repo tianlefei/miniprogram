@@ -1,0 +1,18 @@
+# Installed dependencies (including cloud functions)
+node_modules/
+
+# macOS metadata
+.DS_Store
+
+# WeChat DevTools personal settings
+project.private.config.json
+
+# Local environment files
+.env
+.env.*
+!.env.example
+
+# Package manager debug logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
