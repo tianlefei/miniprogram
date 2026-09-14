@@ -1,0 +1,183 @@
+<!--pages/add/add.wxml-->
+<view class="page">
+  <navigation-bar
+    title="{{isEdit ? '编辑设备' : '添加设备'}}"
+    back="{{true}}"
+    color="#1a1f2e"
+    background="#ffffff"
+  ></navigation-bar>
+
+  <scroll-view class="scrollarea" scroll-y type="list">
+    <view class="form">
+      <!-- 基础信息 -->
+      <view class="group">
+        <text class="group-title">基础信息</text>
+
+        <view class="field">
+          <text class="label">设备名称<text class="req">*</text></text>
+          <input
+            class="input"
+            placeholder="如：3 号楼消防主机"
+            placeholder-style="color:#b3bacb"
+            value="{{form.name}}"
+            data-key="name"
+            bindinput="onInput"
+            maxlength="40"
+          />
+        </view>
+
+        <picker
+          mode="selector"
+          range="{{categories}}"
+          value="{{form.categoryIndex < 0 ? 0 : form.categoryIndex}}"
+          bindchange="onCategoryChange"
+        >
+          <view class="field field-picker">
+            <text class="label">设备类型<text class="req">*</text></text>
+            <view class="picker-value">
+              <text class="{{form.category ? 'value' : 'placeholder'}}">
+                {{form.category || '请选择设备类型'}}
+              </text>
+              <text class="arrow">›</text>
+            </view>
+          </view>
+        </picker>
+
+        <view class="field">
+          <text class="label">品牌型号</text>
+          <input
+            class="input"
+            placeholder="如：JB-QB-GST5000"
+            placeholder-style="color:#b3bacb"
+            value="{{form.model}}"
+            data-key="model"
+            bindinput="onInput"
+            maxlength="40"
+          />
+        </view>
+
+        <view class="field field-last">
+          <text class="label">设备编号</text>
+          <input
+            class="input"
+            placeholder="序列号 / 资产编号"
+            placeholder-style="color:#b3bacb"
+            value="{{form.sn}}"
+            data-key="sn"
+            bindinput="onInput"
+            maxlength="40"
+          />
+        </view>
+      </view>
+
+      <!-- 位置 -->
+      <view class="group">
+        <text class="group-title">安装信息</text>
+
+        <view class="field">
+          <text class="label">安装位置</text>
+          <input
+            class="input"
+            placeholder="如：1 号楼负一层"
+            placeholder-style="color:#b3bacb"
+            value="{{form.location}}"
+            data-key="location"
+            bindinput="onInput"
+            maxlength="50"
+          />
+        </view>
+
+        <picker mode="date" value="{{form.installDate}}" end="{{today}}" bindchange="onInstallDateChange">
+          <view class="field field-picker">
+            <text class="label">安装日期<text class="req">*</text></text>
+            <view class="picker-value">
+              <text class="{{form.installDate ? 'value' : 'placeholder'}}">
+                {{form.installDate || '请选择日期'}}
+              </text>
+              <text class="arrow">›</text>
+            </view>
+          </view>
+        </picker>
+
+        <view class="field field-column field-last">
+          <view class="field-top">
+            <text class="label">使用期限（月）<text class="req">*</text></text>
+            <input
+              class="input input-short"
+              type="number"
+              placeholder="12"
+              placeholder-style="color:#b3bacb"
+              value="{{form.lifespan}}"
+              bindinput="onLifespanInput"
+              maxlength="4"
+            />
+          </view>
+          <view class="presets">
+            <view class="preset" data-months="6" bindtap="onLifespanPreset">6</view>
+            <view class="preset" data-months="12" bindtap="onLifespanPreset">12</view>
+            <view class="preset" data-months="24" bindtap="onLifespanPreset">24</view>
+            <view class="preset" data-months="36" bindtap="onLifespanPreset">36</view>
+            <view class="preset" data-months="60" bindtap="onLifespanPreset">60</view>
+          </view>
+        </view>
+      </view>
+
+      <!-- 到期时间 -->
+      <view class="group">
+        <text class="group-title">更换到期时间</text>
+
+        <picker
+          mode="date"
+          value="{{form.expireDate}}"
+          start="{{form.installDate}}"
+          end="2099-12-31"
+          bindchange="onExpireDateChange"
+        >
+          <view class="field field-picker field-last">
+            <text class="label">到期日期<text class="req">*</text></text>
+            <view class="picker-value">
+              <text class="{{form.expireDate ? 'value' : 'placeholder'}}">
+                {{form.expireDate || '选择日期'}}
+              </text>
+              <text class="arrow">›</text>
+            </view>
+          </view>
+        </picker>
+
+        <picker mode="time" value="{{form.expireTime}}" bindchange="onExpireTimeChange">
+          <view class="field field-picker field-last">
+            <text class="label">到期时间<text class="req">*</text></text>
+            <view class="picker-value"><text class="value">{{form.expireTime || '23:59'}}</text><text class="arrow">›</text></view>
+          </view>
+        </picker>
+
+        <text class="hint">到期日期自动计算，也可手动修改；时间精确到分钟。</text>
+      </view>
+
+      <!-- 备注 -->
+      <view class="group">
+        <text class="group-title">备注</text>
+        <view class="field field-column field-last">
+          <textarea
+            class="textarea"
+            placeholder="记录维护要求、更换注意事项等"
+            placeholder-style="color:#b3bacb"
+            value="{{form.remark}}"
+            data-key="remark"
+            bindinput="onInput"
+            maxlength="120"
+            auto-height
+          />
+        </view>
+      </view>
+
+      <view class="form-bottom"></view>
+    </view>
+  </scroll-view>
+
+  <view class="footer">
+    <view class="btn btn-primary" hover-class="btn-primary-hover" bindtap="onSubmit">
+      {{isEdit ? '保存修改' : '保存设备'}}
+    </view>
+  </view>
+</view>

@@ -1,0 +1,24 @@
+<view class="page">
+  <navigation-bar title="团队" back="{{false}}" color="#1a1f2e" background="#ffffff"></navigation-bar>
+  <scroll-view class="scrollarea" scroll-y>
+    <view class="content">
+      <view class="card profile-entry" bindtap="editProfile"><text class="card-title">个人资料</text><text class="remark">修改维护记录中显示的姓名　›</text></view>
+      <view class="card" wx:if="{{teams.length === 0}}">
+        <text class="card-title">创建团队</text>
+        <input class="input" placeholder="团队名称" value="{{name}}" bindinput="onNameInput" />
+        <view class="btn btn-primary" bindtap="create">创建团队</view>
+      </view>
+      <view class="card" wx:if="{{teams.length === 0}}">
+        <text class="card-title">加入团队</text>
+        <input class="input" placeholder="输入团队邀请码" value="{{joinCode}}" bindinput="onCodeInput" />
+        <view class="btn btn-primary" bindtap="join">加入团队</view>
+      </view>
+      <view class="card" wx:for="{{teams}}" wx:key="_id">
+        <text class="card-title">{{item.name}}</text>
+        <view class="invite" wx:if="{{item.inviteCode}}" bindtap="copyInvite"><text class="remark">邀请码：{{item.inviteCode}}</text><text class="copy">复制</text></view>
+        <text class="remark">团队成员：{{members.length}} 人</text>
+        <view class="member" wx:for="{{members}}" wx:key="_id"><text>成员 {{index + 1}}</text><text class="member-id">{{item._openid}}</text></view>
+      </view>
+    </view>
+  </scroll-view>
+</view>

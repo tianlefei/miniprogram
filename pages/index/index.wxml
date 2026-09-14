@@ -1,0 +1,129 @@
+<!--pages/index/index.wxml-->
+<view class="page">
+  <!-- 顶部渐变区：导航 + 数据概览 -->
+  <view class="hero">
+    <navigation-bar title="设备管理" back="{{false}}" color="#ffffff" background="transparent"></navigation-bar>
+    <view class="hero-body">
+      <view class="stats">
+        <view class="stat" data-key="all" bindtap="onFilterTap">
+          <text class="stat-value">{{stats.total}}</text>
+          <text class="stat-label">设备总数</text>
+        </view>
+        <view class="stat" data-key="warning" bindtap="onFilterTap">
+          <text class="stat-value">{{stats.warning}}</text>
+          <text class="stat-label">即将到期</text>
+        </view>
+        <view class="stat" data-key="expired" bindtap="onFilterTap">
+          <text class="stat-value">{{stats.expired}}</text>
+          <text class="stat-label">已过期</text>
+        </view>
+      </view>
+
+      <view class="tip" wx:if="{{stats.warning > 0 || stats.expired > 0}}" bindtap="goReminder">
+        <text class="tip-icon">!</text>
+        <text class="tip-text">有 {{stats.expired + stats.warning}} 台设备需要关注更换</text>
+        <text class="tip-arrow">›</text>
+      </view>
+
+      <!-- 云端同步状态 -->
+      <view class="sync" bindtap="onSyncTap">
+        <text class="sync-dot {{syncInfo.tone}}"></text>
+        <text class="sync-text">{{syncInfo.text}}</text>
+        <text class="sync-action">{{syncInfo.syncing ? '同步中…' : '立即同步'}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 搜索 + 筛选 -->
+  <view class="toolbar">
+    <view class="search">
+      <text class="search-icon">🔍</text>
+      <input
+        class="search-input"
+        placeholder="搜索设备名称 / 编号 / 位置"
+        placeholder-style="color:#b3bacb"
+        value="{{keyword}}"
+        bindinput="onKeywordInput"
+        confirm-type="search"
+      />
+      <text class="search-clear" wx:if="{{keyword}}" bindtap="clearKeyword">×</text>
+    </view>
+    <view class="filters">
+      <view
+        class="filter {{activeFilter === item.key ? 'filter-active' : ''}}"
+        wx:for="{{filters}}"
+        wx:key="key"
+        data-key="{{item.key}}"
+        bindtap="onFilterTap"
+      >
+        <text>{{item.label}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 设备列表 -->
+  <scroll-view class="scrollarea" scroll-y type="list">
+    <view class="list">
+      <view
+        class="card"
+        wx:for="{{list}}"
+        wx:key="id"
+        data-id="{{item.id}}"
+        bindtap="goDetail"
+      >
+        <view class="card-head">
+          <view class="card-title-box">
+            <text class="card-name">{{item.name}}</text>
+            <view class="tag">{{item.category}}</view>
+          </view>
+          <view class="badge" style="color:{{item.status.color}};background:{{item.status.bg}}">
+            <text>{{item.status.label}}</text>
+          </view>
+        </view>
+
+        <view class="rows">
+          <view class="row">
+            <text class="row-k">设备编号</text>
+            <text class="row-v">{{item.sn || '—'}}</text>
+          </view>
+          <view class="row">
+            <text class="row-k">安装位置</text>
+            <text class="row-v">{{item.location || '—'}}</text>
+          </view>
+          <view class="row">
+            <text class="row-k">到期日期</text>
+            <text class="row-v">{{item.expireDate || '—'}}</text>
+          </view>
+        </view>
+
+        <view class="progress">
+          <view class="progress-track">
+            <view
+              class="progress-bar"
+              style="width:{{item.percent}}%;background:{{item.status.color}}"
+            ></view>
+          </view>
+          <text class="progress-text" style="color:{{item.status.color}}">{{item.daysText}}</text>
+        </view>
+      </view>
+
+      <!-- 空状态 -->
+      <view class="empty" wx:if="{{list.length === 0}}">
+        <view class="empty-icon">🧰</view>
+        <text class="empty-title">{{allList.length === 0 ? '还没有设备' : '没有符合条件的设备'}}</text>
+        <text class="empty-desc" wx:if="{{allList.length === 0}}">录入设备信息，到期自动提醒更换</text>
+        <view class="empty-actions" wx:if="{{allList.length === 0}}">
+          <view class="empty-btn" bindtap="goAdd">添加设备</view>
+          <view class="empty-btn empty-btn-plain" bindtap="importDemo">导入示例数据</view>
+        </view>
+      </view>
+
+      <view class="list-bottom" wx:else></view>
+    </view>
+  </scroll-view>
+
+  <!-- 悬浮添加按钮 -->
+  <view class="fab" hover-class="fab-hover" bindtap="goAdd">
+    <text class="fab-plus">＋</text>
+  </view>
+</view>

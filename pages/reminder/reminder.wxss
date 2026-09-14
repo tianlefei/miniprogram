@@ -1,0 +1,283 @@
+/* pages/reminder/reminder.wxss */
+.page {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: #f2f4f8;
+}
+
+/* ---------- 顶部渐变 ---------- */
+.hero {
+  flex: none;
+  background: linear-gradient(135deg, #1d5fe0 0%, #3f8cff 60%, #56a6ff 100%);
+  border-bottom-left-radius: 40rpx;
+  border-bottom-right-radius: 40rpx;
+  padding-bottom: 30rpx;
+}
+
+.hero-body {
+  padding: 12rpx 28rpx 0;
+}
+
+.hero-stats {
+  display: flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.18);
+  border: 2rpx solid rgba(255, 255, 255, 0.22);
+  border-radius: 24rpx;
+  padding: 26rpx 0;
+}
+
+.hero-stat {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.hero-stat-num {
+  font-size: 48rpx;
+  font-weight: 700;
+  color: #ffffff;
+  line-height: 1.05;
+}
+
+.hero-stat-label {
+  font-size: 22rpx;
+  color: rgba(255, 255, 255, 0.85);
+  margin-top: 8rpx;
+}
+
+.hero-divider {
+  width: 2rpx;
+  height: 56rpx;
+  background: rgba(255, 255, 255, 0.28);
+}
+
+/* ---------- 提前提醒设置 ---------- */
+.setting {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 24rpx 28rpx 0;
+  padding: 24rpx 28rpx;
+  background: #ffffff;
+  border-radius: 24rpx;
+  box-shadow: 0 6rpx 20rpx rgba(29, 62, 128, 0.06);
+}
+
+.setting-label {
+  font-size: 28rpx;
+  color: #33384a;
+}
+
+.setting-value {
+  display: flex;
+  align-items: center;
+  font-size: 28rpx;
+  color: #2b6de5;
+  font-weight: 500;
+}
+
+.arrow {
+  margin-left: 12rpx;
+  color: #c3cad8;
+  font-size: 34rpx;
+}
+
+/* ---------- 列表 ---------- */
+.list {
+  padding: 24rpx 28rpx 0;
+}
+
+.section-title {
+  display: flex;
+  align-items: center;
+  font-size: 26rpx;
+  font-weight: 600;
+  color: #5b6472;
+  margin: 8rpx 8rpx 18rpx;
+}
+
+.dot {
+  width: 14rpx;
+  height: 14rpx;
+  border-radius: 50%;
+  margin-right: 12rpx;
+}
+
+.dot-danger {
+  background: #e5484d;
+}
+
+.dot-warning {
+  background: #e08c00;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  background: #ffffff;
+  border-radius: 28rpx;
+  padding: 26rpx;
+  margin-bottom: 22rpx;
+  box-shadow: 0 6rpx 20rpx rgba(29, 62, 128, 0.06);
+}
+
+.level {
+  width: 128rpx;
+  height: 128rpx;
+  border-radius: 22rpx;
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-right: 24rpx;
+}
+
+.level-num {
+  font-size: 46rpx;
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+.level-unit {
+  font-size: 20rpx;
+  opacity: 0.85;
+  margin-top: 6rpx;
+}
+
+.body {
+  flex: 1;
+  min-width: 0;
+}
+
+.body-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.name {
+  flex: 1;
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #1a1f2e;
+  margin-right: 16rpx;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.badge {
+  flex: none;
+  padding: 6rpx 16rpx;
+  border-radius: 22rpx;
+  font-size: 22rpx;
+  font-weight: 600;
+}
+
+.meta {
+  display: block;
+  margin-top: 12rpx;
+  font-size: 24rpx;
+  color: #8a94a6;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.date {
+  display: block;
+  margin-top: 8rpx;
+  font-size: 24rpx;
+  color: #5b6472;
+}
+
+.list-bottom {
+  height: 40rpx;
+}
+
+/* ---------- 空状态 ---------- */
+.empty {
+  padding: 120rpx 40rpx 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.empty-icon {
+  font-size: 96rpx;
+}
+
+.empty-title {
+  margin-top: 24rpx;
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #33384a;
+}
+
+.empty-desc {
+  margin-top: 14rpx;
+  font-size: 26rpx;
+  color: #8a94a6;
+  text-align: center;
+}
+
+.empty-btn {
+  margin-top: 44rpx;
+  padding: 20rpx 48rpx;
+  border-radius: 44rpx;
+  background: linear-gradient(135deg, #2b6de5 0%, #4f8dff 100%);
+  color: #ffffff;
+  font-size: 28rpx;
+  font-weight: 600;
+}
+
+/* ---------- 订阅提醒 ---------- */
+.subscribe-row {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 20rpx 28rpx 0;
+  padding: 24rpx 28rpx;
+  background: #ffffff;
+  border-radius: 24rpx;
+  box-shadow: 0 6rpx 20rpx rgba(29, 62, 128, 0.06);
+}
+
+.subscribe-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.subscribe-title {
+  font-size: 28rpx;
+  color: #33384a;
+}
+
+.subscribe-desc {
+  margin-top: 8rpx;
+  font-size: 22rpx;
+  color: #8a94a6;
+}
+
+.subscribe-btn {
+  flex: none;
+  margin-left: 20rpx;
+  padding: 12rpx 28rpx;
+  border-radius: 30rpx;
+  font-size: 26rpx;
+  font-weight: 600;
+  color: #ffffff;
+  background: linear-gradient(135deg, #2b6de5 0%, #4f8dff 100%);
+}
+
+.subscribe-btn-on {
+  background: #12a150;
+}

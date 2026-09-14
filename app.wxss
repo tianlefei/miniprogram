@@ -1,0 +1,51 @@
+/**app.wxss**/
+page {
+  font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Helvetica Neue',
+    Helvetica, sans-serif;
+  background: #f2f4f8;
+  color: #1a1f2e;
+}
+
+/* 通用：全屏纵向布局，便于 scroll-view 撑满剩余空间 */
+.page {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+}
+
+.scrollarea {
+  flex: 1;
+  overflow: hidden;
+}
+
+/* 通用按钮 */
+.btn {
+  height: 92rpx;
+  line-height: 92rpx;
+  border-radius: 46rpx;
+  font-size: 32rpx;
+  font-weight: 600;
+  text-align: center;
+  padding: 0 40rpx;
+  border: none;
+}
+
+.btn::after {
+  border: none;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #2b6de5 0%, #4f8dff 100%);
+  color: #ffffff;
+}
+
+.btn-primary-hover {
+  opacity: 0.85;
+}
+
+.btn-ghost {
+  background: #ffffff;
+  color: #e5484d;
+  border: 2rpx solid #ffd9d9;
+}

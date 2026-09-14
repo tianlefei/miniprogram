@@ -1,0 +1,116 @@
+<!--pages/reminder/reminder.wxml-->
+<view class="page">
+  <view class="hero">
+    <navigation-bar title="更换提醒" back="{{false}}" color="#ffffff" background="transparent"></navigation-bar>
+    <view class="hero-body">
+      <view class="hero-stats">
+        <view class="hero-stat">
+          <text class="hero-stat-num">{{overdueList.length}}</text>
+          <text class="hero-stat-label">已过期</text>
+        </view>
+        <view class="hero-divider"></view>
+        <view class="hero-stat">
+          <text class="hero-stat-num">{{soonList.length}}</text>
+          <text class="hero-stat-label">即将到期</text>
+        </view>
+        <view class="hero-divider"></view>
+        <view class="hero-stat">
+          <text class="hero-stat-num">{{normalCount}}</text>
+          <text class="hero-stat-label">正常</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 提前提醒设置 -->
+  <view class="setting">
+    <text class="setting-label">提前提醒</text>
+    <picker mode="selector" range="{{advanceLabels}}" value="{{advanceIndex}}" bindchange="onAdvanceChange">
+      <view class="setting-value">
+        <text>到期前 {{advanceLabels[advanceIndex]}} 开始提醒</text>
+        <text class="arrow">›</text>
+      </view>
+    </picker>
+  </view>
+  <view class="subscribe-row" bindtap="subscribe">
+    <view class="subscribe-info">
+      <text class="subscribe-title">微信订阅到期提醒</text>
+      <text class="subscribe-desc">{{pushDesc}}</text>
+    </view>
+    <text class="subscribe-btn {{pushEnabled ? 'subscribe-btn-on' : ''}}">{{pushBusy ? '处理中…' : (pushEnabled ? '已开启' : '开启')}}</text>
+  </view>
+  <view class="subscribe-row" bindtap="testNotify">
+    <view class="subscribe-info"><text class="subscribe-title">立即测试提醒</text><text class="subscribe-desc">从小程序端调用云函数</text></view>
+    <text class="subscribe-btn">测试</text>
+  </view>
+
+  <scroll-view class="scrollarea" scroll-y type="list">
+    <view class="list">
+      <!-- 已过期 -->
+      <block wx:if="{{overdueList.length > 0}}">
+        <view class="section-title">
+          <text class="dot dot-danger"></text>
+          <text>已过期（{{overdueList.length}}）</text>
+        </view>
+        <view
+          class="item"
+          wx:for="{{overdueList}}"
+          wx:key="id"
+          data-id="{{item.id}}"
+          bindtap="goDetail"
+        >
+          <view class="level" style="background:{{item.status.bg}}">
+            <text class="level-num" style="color:{{item.status.color}}">{{-item.status.daysLeft}}</text>
+            <text class="level-unit" style="color:{{item.status.color}}">已超期/天</text>
+          </view>
+          <view class="body">
+            <view class="body-head">
+              <text class="name">{{item.name}}</text>
+              <view class="badge" style="color:{{item.status.color}};background:{{item.status.bg}}">{{item.status.label}}</view>
+            </view>
+            <text class="meta">{{item.category}}<text wx:if="{{item.location}}"> · {{item.location}}</text></text>
+            <text class="date">到期日期 {{item.expireDate}}</text>
+          </view>
+        </view>
+      </block>
+
+      <!-- 即将到期 -->
+      <block wx:if="{{soonList.length > 0}}">
+        <view class="section-title">
+          <text class="dot dot-warning"></text>
+          <text>即将到期（{{soonList.length}}）</text>
+        </view>
+        <view
+          class="item"
+          wx:for="{{soonList}}"
+          wx:key="id"
+          data-id="{{item.id}}"
+          bindtap="goDetail"
+        >
+          <view class="level" style="background:{{item.status.bg}}">
+            <text class="level-num" style="color:{{item.status.color}}">{{item.status.daysLeft}}</text>
+            <text class="level-unit" style="color:{{item.status.color}}">剩余/天</text>
+          </view>
+          <view class="body">
+            <view class="body-head">
+              <text class="name">{{item.name}}</text>
+              <view class="badge" style="color:{{item.status.color}};background:{{item.status.bg}}">{{item.status.label}}</view>
+            </view>
+            <text class="meta">{{item.category}}<text wx:if="{{item.location}}"> · {{item.location}}</text></text>
+            <text class="date">到期日期 {{item.expireDate}}</text>
+          </view>
+        </view>
+      </block>
+
+      <!-- 空状态 -->
+      <view class="empty" wx:if="{{overdueList.length === 0 && soonList.length === 0}}">
+        <view class="empty-icon">✅</view>
+        <text class="empty-title">{{total === 0 ? '还没有设备' : '暂无需要更换的设备'}}</text>
+        <text class="empty-desc">{{total === 0 ? '录入设备信息，到期自动提醒更换' : '所有设备均在有效期内，可放心使用'}}</text>
+        <view class="empty-btn" bindtap="onEmptyAction">{{total === 0 ? '录入设备' : '返回列表'}}</view>
+      </view>
+
+      <view class="list-bottom"></view>
+    </view>
+  </scroll-view>
+</view>

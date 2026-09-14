@@ -1,0 +1,88 @@
+<!--pages/detail/detail.wxml-->
+<view class="page">
+  <navigation-bar title="设备详情" back="{{true}}" color="#1a1f2e" background="#ffffff"></navigation-bar>
+
+  <scroll-view class="scrollarea" scroll-y type="list" wx:if="{{device}}">
+    <view class="content">
+      <!-- 状态卡片 -->
+      <view class="status-card" style="background:{{device.status.gradient}}">
+        <view class="status-top">
+          <text class="status-name">{{device.name}}</text>
+          <view class="status-badge">
+            <text>{{device.status.label}}</text>
+          </view>
+        </view>
+        <view class="countdown">
+          <text class="countdown-num">{{daysNumber}}</text>
+          <text class="countdown-unit">{{daysUnit}}</text>
+        </view>
+        <view class="status-bottom">
+          <text class="status-expire">到期日期 {{device.expireDate || '—'}}</text>
+          <text class="status-days">{{device.daysText}}</text>
+        </view>
+      </view>
+
+      <!-- 使用进度 -->
+      <view class="card">
+        <view class="progress-head">
+          <text class="card-title">使用寿命进度</text>
+          <text class="progress-percent">{{device.percent}}%</text>
+        </view>
+        <view class="progress-track">
+          <view class="progress-bar" style="width:{{device.percent}}%"></view>
+        </view>
+        <view class="progress-foot">
+          <text class="foot-k">安装日期</text>
+          <text class="foot-v">{{device.installDate || '—'}}</text>
+        </view>
+        <view class="progress-foot">
+          <text class="foot-k">使用期限</text>
+          <text class="foot-v">{{device.lifespanText}}</text>
+        </view>
+      </view>
+
+      <!-- 设备信息 -->
+      <view class="card">
+        <text class="card-title">设备信息</text>
+        <view class="row">
+          <text class="row-k">设备类型</text>
+          <text class="row-v">{{device.category || '—'}}</text>
+        </view>
+        <view class="row">
+          <text class="row-k">品牌型号</text>
+          <text class="row-v">{{device.model || '—'}}</text>
+        </view>
+        <view class="row">
+          <text class="row-k">设备编号</text>
+          <text class="row-v">{{device.sn || '—'}}</text>
+        </view>
+        <view class="row">
+          <text class="row-k">安装位置</text>
+          <text class="row-v">{{device.location || '—'}}</text>
+        </view>
+        <view class="row row-last">
+          <text class="row-k">录入时间</text>
+          <text class="row-v">{{device.updatedAtText}}</text>
+        </view>
+      </view>
+
+      <!-- 备注 -->
+      <view class="card" wx:if="{{device.remark}}">
+        <text class="card-title">备注</text>
+        <text class="remark">{{device.remark}}</text>
+      </view>
+      <view class="card">
+        <view class="progress-head"><text class="card-title">维护记录</text><text class="progress-percent" bindtap="onMaintenance">新增</text></view>
+        <view class="maintenance-item" wx:for="{{maintenanceList}}" wx:key="_id"><view class="row"><text class="row-k">{{item.type}}</text><text class="row-v">{{item.content}}</text></view><text class="remark">维护时间：{{item.recordAtText}}　维护人：{{item.operatorText}}</text></view>
+        <text class="remark" wx:if="{{maintenanceList.length === 0}}">暂无维护记录</text>
+      </view>
+
+      <view class="content-bottom"></view>
+    </view>
+  </scroll-view>
+
+  <view class="footer" wx:if="{{device}}">
+    <view class="btn btn-ghost" bindtap="onDelete">删除</view>
+    <view class="btn btn-primary footer-edit" hover-class="btn-primary-hover" bindtap="onEdit">编辑设备</view>
+  </view>
+</view>
